@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { ISignable, ISignableInterface } from "../ISignable";
+import type { ISignable, ISignableInterface } from "../../interfaces/ISignable";
 
 const _abi = [
   {

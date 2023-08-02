@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import {LibMultiSig} from "./LibMultiSig.sol";
+import {LibMultiSig} from "./cryptography/LibMultiSig.sol";
 
 abstract contract MultiSigDomain {
     using LibMultiSig for LibMultiSig.DomainSeparator;

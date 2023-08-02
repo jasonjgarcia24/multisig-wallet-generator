@@ -2,6 +2,7 @@ import "hardhat-preprocessor";
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "@nomicfoundation/hardhat-ethers";
+import "@nomicfoundation/hardhat-chai-matchers";
 import fs from "fs";
 import * as accounts from "./accounts.json";
 

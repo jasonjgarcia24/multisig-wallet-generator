@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { IMultiSig, IMultiSigInterface } from "../IMultiSig";
+import type { IMultiSig, IMultiSigInterface } from "../../interfaces/IMultiSig";
 
 const _abi = [
   {

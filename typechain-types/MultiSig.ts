@@ -36,18 +36,32 @@ export type WithdrawableInfoStructOutput = [
 export interface MultiSigInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "__signatureNonces"
+      | "_verifySignature"
+      | "checkNonce"
       | "checkSigner"
       | "grantSigner"
       | "name"
       | "nonce"
       | "revokeSigner"
       | "signers"
-      | "submitSignoff"
       | "threshold"
       | "version"
       | "withdraw"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "__signatureNonces",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "_verifySignature",
+    values: [WithdrawableInfoStruct, BytesLike[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "checkNonce",
+    values: [AddressLike, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "checkSigner",
     values: [AddressLike]
@@ -66,10 +80,6 @@ export interface MultiSigInterface extends Interface {
     functionFragment: "signers",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "submitSignoff",
-    values: [AddressLike]
-  ): string;
   encodeFunctionData(functionFragment: "threshold", values?: undefined): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
   encodeFunctionData(
@@ -77,6 +87,15 @@ export interface MultiSigInterface extends Interface {
     values: [WithdrawableInfoStruct, BytesLike[]]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "__signatureNonces",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "_verifySignature",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "checkNonce", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "checkSigner",
     data: BytesLike
@@ -92,10 +111,6 @@ export interface MultiSigInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "signers", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "submitSignoff",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "threshold", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
@@ -144,6 +159,24 @@ export interface MultiSig extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  __signatureNonces: TypedContractMethod<
+    [signer: AddressLike],
+    [bigint],
+    "view"
+  >;
+
+  _verifySignature: TypedContractMethod<
+    [_info: WithdrawableInfoStruct, _signatures: BytesLike[]],
+    [void],
+    "nonpayable"
+  >;
+
+  checkNonce: TypedContractMethod<
+    [_signer: AddressLike, _nonce: BigNumberish],
+    [boolean],
+    "view"
+  >;
+
   checkSigner: TypedContractMethod<[_signer: AddressLike], [boolean], "view">;
 
   grantSigner: TypedContractMethod<
@@ -164,12 +197,6 @@ export interface MultiSig extends BaseContract {
 
   signers: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
 
-  submitSignoff: TypedContractMethod<
-    [_signer: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-
   threshold: TypedContractMethod<[], [bigint], "view">;
 
   version: TypedContractMethod<[], [string], "view">;
@@ -184,6 +211,23 @@ export interface MultiSig extends BaseContract {
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "__signatureNonces"
+  ): TypedContractMethod<[signer: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "_verifySignature"
+  ): TypedContractMethod<
+    [_info: WithdrawableInfoStruct, _signatures: BytesLike[]],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "checkNonce"
+  ): TypedContractMethod<
+    [_signer: AddressLike, _nonce: BigNumberish],
+    [boolean],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "checkSigner"
   ): TypedContractMethod<[_signer: AddressLike], [boolean], "view">;
@@ -202,9 +246,6 @@ export interface MultiSig extends BaseContract {
   getFunction(
     nameOrSignature: "signers"
   ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
-  getFunction(
-    nameOrSignature: "submitSignoff"
-  ): TypedContractMethod<[_signer: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "threshold"
   ): TypedContractMethod<[], [bigint], "view">;

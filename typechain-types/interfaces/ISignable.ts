@@ -3,7 +3,6 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumberish,
   BytesLike,
   FunctionFragment,
   Result,
@@ -19,16 +18,11 @@ import type {
   TypedEventLog,
   TypedListener,
   TypedContractMethod,
-} from "./common";
+} from "../common";
 
-export interface SignableInterface extends Interface {
+export interface ISignableInterface extends Interface {
   getFunction(
-    nameOrSignature:
-      | "checkSigner"
-      | "grantSigner"
-      | "revokeSigner"
-      | "signers"
-      | "submitSignoff"
+    nameOrSignature: "checkSigner" | "grantSigner" | "revokeSigner"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -43,14 +37,6 @@ export interface SignableInterface extends Interface {
     functionFragment: "revokeSigner",
     values: [AddressLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "signers",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "submitSignoff",
-    values: [AddressLike]
-  ): string;
 
   decodeFunctionResult(
     functionFragment: "checkSigner",
@@ -64,18 +50,13 @@ export interface SignableInterface extends Interface {
     functionFragment: "revokeSigner",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "signers", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "submitSignoff",
-    data: BytesLike
-  ): Result;
 }
 
-export interface Signable extends BaseContract {
-  connect(runner?: ContractRunner | null): Signable;
+export interface ISignable extends BaseContract {
+  connect(runner?: ContractRunner | null): ISignable;
   waitForDeployment(): Promise<this>;
 
-  interface: SignableInterface;
+  interface: ISignableInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -128,14 +109,6 @@ export interface Signable extends BaseContract {
     "nonpayable"
   >;
 
-  signers: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
-
-  submitSignoff: TypedContractMethod<
-    [_signer: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
@@ -148,12 +121,6 @@ export interface Signable extends BaseContract {
   ): TypedContractMethod<[_signer: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "revokeSigner"
-  ): TypedContractMethod<[_signer: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "signers"
-  ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
-  getFunction(
-    nameOrSignature: "submitSignoff"
   ): TypedContractMethod<[_signer: AddressLike], [void], "nonpayable">;
 
   filters: {};

@@ -3,6 +3,7 @@
 /* eslint-disable */
 import type {
   BaseContract,
+  BigNumberish,
   BytesLike,
   FunctionFragment,
   Result,
@@ -18,14 +19,29 @@ import type {
   TypedEventLog,
   TypedListener,
   TypedContractMethod,
-} from "./common";
+} from "../common";
 
-export interface ISignableInterface extends Interface {
+export interface SignableInterface extends Interface {
   getFunction(
-    nameOrSignature: "checkSigner" | "grantSigner" | "revokeSigner"
+    nameOrSignature:
+      | "__signatureNonces"
+      | "checkNonce"
+      | "checkSigner"
+      | "grantSigner"
+      | "nonce"
+      | "revokeSigner"
+      | "signers"
   ): FunctionFragment;
 
   encodeFunctionData(
+    functionFragment: "__signatureNonces",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "checkNonce",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "checkSigner",
     values: [AddressLike]
   ): string;
@@ -33,12 +49,22 @@ export interface ISignableInterface extends Interface {
     functionFragment: "grantSigner",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(functionFragment: "nonce", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "revokeSigner",
     values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "signers",
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(
+    functionFragment: "__signatureNonces",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "checkNonce", data: BytesLike): Result;
+  decodeFunctionResult(
     functionFragment: "checkSigner",
     data: BytesLike
   ): Result;
@@ -46,17 +72,19 @@ export interface ISignableInterface extends Interface {
     functionFragment: "grantSigner",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "nonce", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "revokeSigner",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "signers", data: BytesLike): Result;
 }
 
-export interface ISignable extends BaseContract {
-  connect(runner?: ContractRunner | null): ISignable;
+export interface Signable extends BaseContract {
+  connect(runner?: ContractRunner | null): Signable;
   waitForDeployment(): Promise<this>;
 
-  interface: ISignableInterface;
+  interface: SignableInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -95,6 +123,18 @@ export interface ISignable extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  __signatureNonces: TypedContractMethod<
+    [signer: AddressLike],
+    [bigint],
+    "view"
+  >;
+
+  checkNonce: TypedContractMethod<
+    [_signer: AddressLike, _nonce: BigNumberish],
+    [boolean],
+    "view"
+  >;
+
   checkSigner: TypedContractMethod<[_signer: AddressLike], [boolean], "view">;
 
   grantSigner: TypedContractMethod<
@@ -103,16 +143,30 @@ export interface ISignable extends BaseContract {
     "nonpayable"
   >;
 
+  nonce: TypedContractMethod<[], [bigint], "view">;
+
   revokeSigner: TypedContractMethod<
     [_signer: AddressLike],
     [void],
     "nonpayable"
   >;
 
+  signers: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
+
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "__signatureNonces"
+  ): TypedContractMethod<[signer: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "checkNonce"
+  ): TypedContractMethod<
+    [_signer: AddressLike, _nonce: BigNumberish],
+    [boolean],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "checkSigner"
   ): TypedContractMethod<[_signer: AddressLike], [boolean], "view">;
@@ -120,8 +174,14 @@ export interface ISignable extends BaseContract {
     nameOrSignature: "grantSigner"
   ): TypedContractMethod<[_signer: AddressLike], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "nonce"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "revokeSigner"
   ): TypedContractMethod<[_signer: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "signers"
+  ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
 
   filters: {};
 }

@@ -14,9 +14,13 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
-      name: "Example",
+      name: "Signable",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Example__factory>;
+    ): Promise<Contracts.Signable__factory>;
+    getContractFactory(
+      name: "LibMultiSig",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.LibMultiSig__factory>;
     getContractFactory(
       name: "IMultiSig",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -26,23 +30,20 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ISignable__factory>;
     getContractFactory(
-      name: "LibMultiSig",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.LibMultiSig__factory>;
-    getContractFactory(
       name: "MultiSig",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MultiSig__factory>;
-    getContractFactory(
-      name: "Signable",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Signable__factory>;
 
     getContractAt(
-      name: "Example",
+      name: "Signable",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.Example>;
+    ): Promise<Contracts.Signable>;
+    getContractAt(
+      name: "LibMultiSig",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.LibMultiSig>;
     getContractAt(
       name: "IMultiSig",
       address: string | ethers.Addressable,
@@ -54,25 +55,19 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.ISignable>;
     getContractAt(
-      name: "LibMultiSig",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.LibMultiSig>;
-    getContractAt(
       name: "MultiSig",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.MultiSig>;
-    getContractAt(
-      name: "Signable",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Signable>;
 
     deployContract(
-      name: "Example",
+      name: "Signable",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Example>;
+    ): Promise<Contracts.Signable>;
+    deployContract(
+      name: "LibMultiSig",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.LibMultiSig>;
     deployContract(
       name: "IMultiSig",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -82,23 +77,20 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ISignable>;
     deployContract(
-      name: "LibMultiSig",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.LibMultiSig>;
-    deployContract(
       name: "MultiSig",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MultiSig>;
-    deployContract(
-      name: "Signable",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Signable>;
 
     deployContract(
-      name: "Example",
+      name: "Signable",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Example>;
+    ): Promise<Contracts.Signable>;
+    deployContract(
+      name: "LibMultiSig",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.LibMultiSig>;
     deployContract(
       name: "IMultiSig",
       args: any[],
@@ -110,20 +102,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ISignable>;
     deployContract(
-      name: "LibMultiSig",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.LibMultiSig>;
-    deployContract(
       name: "MultiSig",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MultiSig>;
-    deployContract(
-      name: "Signable",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Signable>;
 
     // default types
     getContractFactory(

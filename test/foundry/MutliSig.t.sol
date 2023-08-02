@@ -4,9 +4,9 @@ pragma solidity 0.8.20;
 import {console} from "forge-std/console.sol";
 import {Setup} from "./Setup.t.sol";
 
-import {MultiSig} from "@base/MultiSig.sol";
-import {WithdrawableInfo} from "@base/IMultiSig.sol";
-import {LibMultiSig} from "@base/LibMultiSig.sol";
+import {MultiSig} from "../../src/MultiSig.sol";
+import {WithdrawableInfo} from "../../src/interfaces/IMultiSig.sol";
+import {LibMultiSig} from "../../src/cryptography/LibMultiSig.sol";
 
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 

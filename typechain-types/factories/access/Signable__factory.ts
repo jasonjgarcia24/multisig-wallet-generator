@@ -3,23 +3,62 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { Signable, SignableInterface } from "../Signable";
+import type { Signable, SignableInterface } from "../../access/Signable";
 
 const _abi = [
   {
-    inputs: [],
-    name: "InvalidSignerStatus",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "UnauthorizedCaller",
-    type: "error",
-  },
-  {
-    inputs: [],
+    inputs: [
+      {
+        internalType: "address",
+        name: "_account",
+        type: "address",
+      },
+    ],
     name: "UnauthorizedSigner",
     type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "signer",
+        type: "address",
+      },
+    ],
+    name: "__signatureNonces",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "nonce",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_signer",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_nonce",
+        type: "uint256",
+      },
+    ],
+    name: "checkNonce",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
@@ -54,6 +93,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "nonce",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -83,19 +135,6 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_signer",
-        type: "address",
-      },
-    ],
-    name: "submitSignoff",
-    outputs: [],
-    stateMutability: "nonpayable",
     type: "function",
   },
 ] as const;
