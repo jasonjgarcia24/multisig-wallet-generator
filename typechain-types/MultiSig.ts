@@ -37,12 +37,10 @@ export interface MultiSigInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "__signatureNonces"
-      | "_verifySignature"
       | "checkNonce"
       | "checkSigner"
       | "grantSigner"
       | "name"
-      | "nonce"
       | "revokeSigner"
       | "signers"
       | "threshold"
@@ -53,10 +51,6 @@ export interface MultiSigInterface extends Interface {
   encodeFunctionData(
     functionFragment: "__signatureNonces",
     values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "_verifySignature",
-    values: [WithdrawableInfoStruct, BytesLike[]]
   ): string;
   encodeFunctionData(
     functionFragment: "checkNonce",
@@ -71,7 +65,6 @@ export interface MultiSigInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(functionFragment: "nonce", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "revokeSigner",
     values: [AddressLike]
@@ -91,10 +84,6 @@ export interface MultiSigInterface extends Interface {
     functionFragment: "__signatureNonces",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "_verifySignature",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "checkNonce", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "checkSigner",
@@ -105,7 +94,6 @@ export interface MultiSigInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "nonce", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "revokeSigner",
     data: BytesLike
@@ -165,12 +153,6 @@ export interface MultiSig extends BaseContract {
     "view"
   >;
 
-  _verifySignature: TypedContractMethod<
-    [_info: WithdrawableInfoStruct, _signatures: BytesLike[]],
-    [void],
-    "nonpayable"
-  >;
-
   checkNonce: TypedContractMethod<
     [_signer: AddressLike, _nonce: BigNumberish],
     [boolean],
@@ -186,8 +168,6 @@ export interface MultiSig extends BaseContract {
   >;
 
   name: TypedContractMethod<[], [string], "view">;
-
-  nonce: TypedContractMethod<[], [bigint], "view">;
 
   revokeSigner: TypedContractMethod<
     [_signer: AddressLike],
@@ -215,13 +195,6 @@ export interface MultiSig extends BaseContract {
     nameOrSignature: "__signatureNonces"
   ): TypedContractMethod<[signer: AddressLike], [bigint], "view">;
   getFunction(
-    nameOrSignature: "_verifySignature"
-  ): TypedContractMethod<
-    [_info: WithdrawableInfoStruct, _signatures: BytesLike[]],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
     nameOrSignature: "checkNonce"
   ): TypedContractMethod<
     [_signer: AddressLike, _nonce: BigNumberish],
@@ -237,9 +210,6 @@ export interface MultiSig extends BaseContract {
   getFunction(
     nameOrSignature: "name"
   ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "nonce"
-  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "revokeSigner"
   ): TypedContractMethod<[_signer: AddressLike], [void], "nonpayable">;

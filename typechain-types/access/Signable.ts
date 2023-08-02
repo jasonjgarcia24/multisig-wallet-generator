@@ -28,7 +28,6 @@ export interface SignableInterface extends Interface {
       | "checkNonce"
       | "checkSigner"
       | "grantSigner"
-      | "nonce"
       | "revokeSigner"
       | "signers"
   ): FunctionFragment;
@@ -49,7 +48,6 @@ export interface SignableInterface extends Interface {
     functionFragment: "grantSigner",
     values: [AddressLike]
   ): string;
-  encodeFunctionData(functionFragment: "nonce", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "revokeSigner",
     values: [AddressLike]
@@ -72,7 +70,6 @@ export interface SignableInterface extends Interface {
     functionFragment: "grantSigner",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "nonce", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "revokeSigner",
     data: BytesLike
@@ -143,8 +140,6 @@ export interface Signable extends BaseContract {
     "nonpayable"
   >;
 
-  nonce: TypedContractMethod<[], [bigint], "view">;
-
   revokeSigner: TypedContractMethod<
     [_signer: AddressLike],
     [void],
@@ -173,9 +168,6 @@ export interface Signable extends BaseContract {
   getFunction(
     nameOrSignature: "grantSigner"
   ): TypedContractMethod<[_signer: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "nonce"
-  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "revokeSigner"
   ): TypedContractMethod<[_signer: AddressLike], [void], "nonpayable">;

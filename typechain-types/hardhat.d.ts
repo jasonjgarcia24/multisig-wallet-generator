@@ -22,6 +22,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.LibMultiSig__factory>;
     getContractFactory(
+      name: "MultiSigMetadata",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MultiSigMetadata__factory>;
+    getContractFactory(
       name: "IMultiSig",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IMultiSig__factory>;
@@ -45,6 +49,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.LibMultiSig>;
     getContractAt(
+      name: "MultiSigMetadata",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MultiSigMetadata>;
+    getContractAt(
       name: "IMultiSig",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -69,6 +78,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.LibMultiSig>;
     deployContract(
+      name: "MultiSigMetadata",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MultiSigMetadata>;
+    deployContract(
       name: "IMultiSig",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IMultiSig>;
@@ -91,6 +104,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.LibMultiSig>;
+    deployContract(
+      name: "MultiSigMetadata",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MultiSigMetadata>;
     deployContract(
       name: "IMultiSig",
       args: any[],

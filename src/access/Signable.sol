@@ -11,15 +11,13 @@ uint256 constant _NONCE_MAP_ = 0xfffffffffffffffffffffffffffffffffffffffffffffff
 uint256 constant _NONCE_MAX_ = 0x00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
 abstract contract Signable {
-    address immutable _self;
-    uint256 public nonce;
+    uint256 private __nonce;
 
     address[] public signers;
     mapping(address signer => uint256 nonce) public __signatureNonces;
 
     constructor(address[] memory _signers) {
-        _self = address(this);
-        nonce = 1;
+        __nonce = 1;
 
         for (uint256 i = 0; i < _signers.length; i++) _grantSigner(_signers[i]);
     }
@@ -27,6 +25,11 @@ abstract contract Signable {
     modifier onlySigner() {
         if (!checkSigner(msg.sender)) revert UnauthorizedSigner(msg.sender);
         _;
+    }
+
+    modifier nonceIncrementor() {
+        _;
+        __nonce += 1;
     }
 
     function checkSigner(address _signer) public view returns (bool) {
