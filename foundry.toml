@@ -1,4 +1,7 @@
 [profile.default]
 src = "src"
-out = "out"
+test = "test/foundry"
+cache_path = "cache/foundry"
+out = "out/foundry"
 libs = ["lib"]
+fs_permissions = [{ access = "read-write", path = "./"}]

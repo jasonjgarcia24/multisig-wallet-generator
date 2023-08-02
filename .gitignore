@@ -12,5 +12,6 @@ docs/
 
 # Dotenv file
 .env
+accounts.json
 node_modules
 lib/
