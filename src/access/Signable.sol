@@ -10,6 +10,9 @@ uint256 constant _NONCE_MASK_ = 0xff;
 uint256 constant _NONCE_MAP_ = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00;
 uint256 constant _NONCE_MAX_ = 0x00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
+uint256 constant _SIGNER_ADD_ = 0x01;
+uint256 constant _SIGNER_RMV_ = 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe;
+
 abstract contract Signable {
     uint256 private __nonce;
 
@@ -27,7 +30,7 @@ abstract contract Signable {
         _;
     }
 
-    modifier nonceIncrementor() {
+    modifier nonceUpdater() {
         _;
         __nonce += 1;
     }
@@ -43,30 +46,46 @@ abstract contract Signable {
         return
             // _nonce must not be greater than max.
             _nonce <= _NONCE_MAX_ &&
-            // _nonce must be less than the current nonce.
+            // _nonce must be at least the current nonce.
+            _nonce >= __nonce &&
+            // _nonce must not be signed off by signer.
             ((__signatureNonces[_signer] & _NONCE_MAP_) >> _NONCE_POS_) <
             _nonce;
     }
 
-    function _submitSignoff(address _signer, uint256 _nonce) internal {
-        _verifySignature(_signer, _nonce);
-        __useSignature(_signer, _nonce);
-    }
-
-    function grantSigner(address _signer) external onlySigner {
+    function grantSigner(address _signer) public virtual onlySigner {
         _grantSigner(_signer);
     }
 
-    function revokeSigner(address _signer) external onlySigner {
+    function revokeSigner(address _signer) public virtual onlySigner {
         _revokeSigner(_signer);
     }
 
+    function _submitSignoff(address _signer, uint256 _nonce) internal {
+        __useSignature(_signer, _nonce);
+    }
+
     function _grantSigner(address _signer) internal {
-        __signatureNonces[_signer] |= 0x01;
+        // Revert if signer already exists.
+        if (checkSigner(_signer)) revert UnauthorizedSigner(_signer);
+
+        signers.push(_signer);
+        __signatureNonces[_signer] |= _SIGNER_ADD_;
     }
 
     function _revokeSigner(address _signer) internal {
-        __signatureNonces[_signer] &= 0x00;
+        // Get index of signer in signers array.
+        uint256 i;
+        for (i; i < signers.length; ) if (signers[i++] == _signer) break;
+
+        // Revert if signer not found.
+        if (i-- > signers.length) revert UnauthorizedSigner(_signer);
+
+        // Swap/pop signer from signers array.
+        signers[i] = signers[signers.length - 1];
+        signers.pop();
+
+        __signatureNonces[_signer] &= _SIGNER_RMV_;
     }
 
     function _verifySignature(address _signer, uint256 _nonce) internal view {
@@ -75,6 +94,7 @@ abstract contract Signable {
     }
 
     function __useSignature(address _signer, uint256 _nonce) private {
+        _verifySignature(_signer, _nonce);
         __signatureNonces[_signer] = (_nonce << _NONCE_POS_) | 0x01;
     }
 }

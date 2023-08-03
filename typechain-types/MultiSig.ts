@@ -8,6 +8,7 @@ import type {
   FunctionFragment,
   Result,
   Interface,
+  EventFragment,
   AddressLike,
   ContractRunner,
   ContractMethod,
@@ -17,6 +18,7 @@ import type {
   TypedContractEvent,
   TypedDeferredTopicFilter,
   TypedEventLog,
+  TypedLogDescription,
   TypedListener,
   TypedContractMethod,
 } from "./common";
@@ -37,6 +39,7 @@ export interface MultiSigInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "__signatureNonces"
+      | "cap"
       | "checkNonce"
       | "checkSigner"
       | "grantSigner"
@@ -48,10 +51,13 @@ export interface MultiSigInterface extends Interface {
       | "withdraw"
   ): FunctionFragment;
 
+  getEvent(nameOrSignatureOrTopic: "PaymentReceived"): EventFragment;
+
   encodeFunctionData(
     functionFragment: "__signatureNonces",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(functionFragment: "cap", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "checkNonce",
     values: [AddressLike, BigNumberish]
@@ -84,6 +90,7 @@ export interface MultiSigInterface extends Interface {
     functionFragment: "__signatureNonces",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "cap", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "checkNonce", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "checkSigner",
@@ -102,6 +109,24 @@ export interface MultiSigInterface extends Interface {
   decodeFunctionResult(functionFragment: "threshold", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+}
+
+export namespace PaymentReceivedEvent {
+  export type InputTuple = [
+    from: AddressLike,
+    amount: BigNumberish,
+    timestamp: BigNumberish
+  ];
+  export type OutputTuple = [from: string, amount: bigint, timestamp: bigint];
+  export interface OutputObject {
+    from: string;
+    amount: bigint;
+    timestamp: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export interface MultiSig extends BaseContract {
@@ -153,6 +178,8 @@ export interface MultiSig extends BaseContract {
     "view"
   >;
 
+  cap: TypedContractMethod<[], [bigint], "view">;
+
   checkNonce: TypedContractMethod<
     [_signer: AddressLike, _nonce: BigNumberish],
     [boolean],
@@ -162,7 +189,7 @@ export interface MultiSig extends BaseContract {
   checkSigner: TypedContractMethod<[_signer: AddressLike], [boolean], "view">;
 
   grantSigner: TypedContractMethod<
-    [_signer: AddressLike],
+    [_signerAddress: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -170,7 +197,7 @@ export interface MultiSig extends BaseContract {
   name: TypedContractMethod<[], [string], "view">;
 
   revokeSigner: TypedContractMethod<
-    [_signer: AddressLike],
+    [_signerAddress: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -195,6 +222,9 @@ export interface MultiSig extends BaseContract {
     nameOrSignature: "__signatureNonces"
   ): TypedContractMethod<[signer: AddressLike], [bigint], "view">;
   getFunction(
+    nameOrSignature: "cap"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "checkNonce"
   ): TypedContractMethod<
     [_signer: AddressLike, _nonce: BigNumberish],
@@ -206,13 +236,13 @@ export interface MultiSig extends BaseContract {
   ): TypedContractMethod<[_signer: AddressLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "grantSigner"
-  ): TypedContractMethod<[_signer: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<[_signerAddress: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "name"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "revokeSigner"
-  ): TypedContractMethod<[_signer: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<[_signerAddress: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "signers"
   ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
@@ -230,5 +260,24 @@ export interface MultiSig extends BaseContract {
     "nonpayable"
   >;
 
-  filters: {};
+  getEvent(
+    key: "PaymentReceived"
+  ): TypedContractEvent<
+    PaymentReceivedEvent.InputTuple,
+    PaymentReceivedEvent.OutputTuple,
+    PaymentReceivedEvent.OutputObject
+  >;
+
+  filters: {
+    "PaymentReceived(address,uint256,uint256)": TypedContractEvent<
+      PaymentReceivedEvent.InputTuple,
+      PaymentReceivedEvent.OutputTuple,
+      PaymentReceivedEvent.OutputObject
+    >;
+    PaymentReceived: TypedContractEvent<
+      PaymentReceivedEvent.InputTuple,
+      PaymentReceivedEvent.OutputTuple,
+      PaymentReceivedEvent.OutputObject
+    >;
+  };
 }

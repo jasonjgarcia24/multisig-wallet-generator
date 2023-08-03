@@ -8,6 +8,7 @@ import type {
   FunctionFragment,
   Result,
   Interface,
+  EventFragment,
   AddressLike,
   ContractRunner,
   ContractMethod,
@@ -17,6 +18,7 @@ import type {
   TypedContractEvent,
   TypedDeferredTopicFilter,
   TypedEventLog,
+  TypedLogDescription,
   TypedListener,
   TypedContractMethod,
 } from "../common";
@@ -36,12 +38,32 @@ export type WithdrawableInfoStructOutput = [
 export interface IMultiSigInterface extends Interface {
   getFunction(nameOrSignature: "withdraw"): FunctionFragment;
 
+  getEvent(nameOrSignatureOrTopic: "PaymentReceived"): EventFragment;
+
   encodeFunctionData(
     functionFragment: "withdraw",
     values: [WithdrawableInfoStruct, BytesLike[]]
   ): string;
 
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+}
+
+export namespace PaymentReceivedEvent {
+  export type InputTuple = [
+    from: AddressLike,
+    amount: BigNumberish,
+    timestamp: BigNumberish
+  ];
+  export type OutputTuple = [from: string, amount: bigint, timestamp: bigint];
+  export interface OutputObject {
+    from: string;
+    amount: bigint;
+    timestamp: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export interface IMultiSig extends BaseContract {
@@ -105,5 +127,24 @@ export interface IMultiSig extends BaseContract {
     "nonpayable"
   >;
 
-  filters: {};
+  getEvent(
+    key: "PaymentReceived"
+  ): TypedContractEvent<
+    PaymentReceivedEvent.InputTuple,
+    PaymentReceivedEvent.OutputTuple,
+    PaymentReceivedEvent.OutputObject
+  >;
+
+  filters: {
+    "PaymentReceived(address,uint256,uint256)": TypedContractEvent<
+      PaymentReceivedEvent.InputTuple,
+      PaymentReceivedEvent.OutputTuple,
+      PaymentReceivedEvent.OutputObject
+    >;
+    PaymentReceived: TypedContractEvent<
+      PaymentReceivedEvent.InputTuple,
+      PaymentReceivedEvent.OutputTuple,
+      PaymentReceivedEvent.OutputObject
+    >;
+  };
 }

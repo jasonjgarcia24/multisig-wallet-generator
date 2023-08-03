@@ -15,6 +15,8 @@ export type { Signable } from "./access/Signable";
 export { Signable__factory } from "./factories/access/Signable__factory";
 export type { LibMultiSig } from "./cryptography/LibMultiSig";
 export { LibMultiSig__factory } from "./factories/cryptography/LibMultiSig__factory";
+export type { IMultiSigMetadata } from "./extensions/IMultiSigMetadata";
+export { IMultiSigMetadata__factory } from "./factories/extensions/IMultiSigMetadata__factory";
 export type { MultiSigMetadata } from "./extensions/MultiSigMetadata";
 export { MultiSigMetadata__factory } from "./factories/extensions/MultiSigMetadata__factory";
 export type { IMultiSig } from "./interfaces/IMultiSig";

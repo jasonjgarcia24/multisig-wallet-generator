@@ -14,6 +14,7 @@ export interface ISigner {
         signature: SignatureLike
     ): string;
     getChainId(): Promise<number>;
+    provider: ethers.Provider;
 }
 
 export async function signData(

@@ -2,6 +2,7 @@
 pragma solidity 0.8.20;
 
 error InvalidNonce();
+error InvalidSignerCount();
 error InsufficientSignatureCount();
 error FailedTransfer();
 
@@ -16,6 +17,12 @@ bytes32 constant _WITHDRAWABLE_TYPE_HASH_ = keccak256(
 );
 
 interface IMultiSig {
+    event PaymentReceived(
+        address indexed from,
+        uint256 amount,
+        uint256 timestamp
+    );
+
     function withdraw(
         WithdrawableInfo calldata _info,
         bytes[] calldata _signatures

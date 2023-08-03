@@ -7,6 +7,31 @@ import type { IMultiSig, IMultiSigInterface } from "../../interfaces/IMultiSig";
 
 const _abi = [
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "from",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "timestamp",
+        type: "uint256",
+      },
+    ],
+    name: "PaymentReceived",
+    type: "event",
+  },
+  {
     inputs: [
       {
         components: [
