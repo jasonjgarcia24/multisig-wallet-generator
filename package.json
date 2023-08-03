@@ -8,7 +8,7 @@
         "test": "test"
     },
     "scripts": {
-        "test": "forge test -vv & hh test",
+        "test": "hh test ; forge test -vv",
         "test-hh": "hh test",
         "test-00": "hh test --grep '00.[0-9]{2}.[0-9]{2}.*'",
         "test-01": "hh test --grep '01.[0-9]{2}.[0-9]{2}.*'",
