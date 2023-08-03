@@ -66,6 +66,8 @@ abstract contract Signable {
     }
 
     function _grantSigner(address _signer) internal {
+        if (_signer == address(0)) revert UnauthorizedSigner(_signer);
+
         // Revert if signer already exists.
         if (checkSigner(_signer)) revert UnauthorizedSigner(_signer);
 

@@ -6,3 +6,4 @@ export * as cryptography from "./cryptography";
 export * as extensions from "./extensions";
 export * as interfaces from "./interfaces";
 export { MultiSig__factory } from "./MultiSig__factory";
+export { MultiSigFactory__factory } from "./MultiSigFactory__factory";

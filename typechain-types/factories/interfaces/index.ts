@@ -2,4 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export { IMultiSig__factory } from "./IMultiSig__factory";
+export { IMultiSigFactory__factory } from "./IMultiSigFactory__factory";
 export { ISignable__factory } from "./ISignable__factory";

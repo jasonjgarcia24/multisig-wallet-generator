@@ -12,22 +12,6 @@ import {IMultiSigFactory, MultiSigArgs} from "../../src/interfaces/IMultiSigFact
 
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
-abstract contract MultiSigFactoryHarness is IMultiSigFactory {
-    function deploy(
-        MultiSigArgs memory _multiSigArgs,
-        bytes32 _salt
-    ) external payable virtual override {}
-
-    function getAddress(
-        bytes memory _bytecode,
-        uint256 _salt
-    ) public view virtual override returns (address) {}
-
-    function getBytecode(
-        MultiSigArgs memory _multiSigArgs
-    ) public pure virtual override returns (bytes memory) {}
-}
-
 abstract contract MultiSigFactoryInit is Setup {
     MultiSigFactory public multiSigFactory;
 
@@ -38,15 +22,14 @@ abstract contract MultiSigFactoryInit is Setup {
     }
 }
 
-abstract contract MultiSigFactoryUtils is
-    MultiSigFactoryInit,
-    MultiSigFactoryHarness
-{
+abstract contract MultiSigFactoryUtils is MultiSigFactoryInit {
     using Strings for uint256;
     using StrUtils for string;
 
     bytes32 constant DEPLOYED_EVENT_HASH =
         keccak256("Deployed(address,address)");
+
+    mapping(address account => bool usedStatus) internal _usedAccountStatus;
 
     function _deploy(
         MultiSigArgs memory _multiSigArgs,
@@ -137,15 +120,15 @@ abstract contract MultiSigFactoryUtils is
 
     function _testSigners(
         address _contractAddress,
-        address[] memory _signers
+        address[] memory _tempSigners
     ) internal {
         MultiSig _multiSig = MultiSig(payable(_contractAddress));
 
         // Test signers
-        for (uint256 i; i < _signers.length; i++) {
+        for (uint256 i; i < _tempSigners.length; i++) {
             assertEq(
                 _multiSig.signers(i),
-                _signers[i],
+                _tempSigners[i],
                 i
                     .toString()
                     .concat(" :: _testSigners :: signer ")
@@ -157,14 +140,15 @@ abstract contract MultiSigFactoryUtils is
 
     function _testCheckSigners(
         address _contractAddress,
-        address[] memory _signers
+        address[] memory _tempSigners,
+        address[] memory _notSigners
     ) internal {
         MultiSig _multiSig = MultiSig(payable(_contractAddress));
 
         // Test checkSigners signers
-        for (uint256 i; i < _signers.length; i++) {
+        for (uint256 i; i < _tempSigners.length; i++) {
             assertTrue(
-                _multiSig.checkSigner(_signers[i]),
+                _multiSig.checkSigner(_tempSigners[i]),
                 i
                     .toString()
                     .concat(" :: _testCheckSigners :: signer ")
@@ -174,9 +158,9 @@ abstract contract MultiSigFactoryUtils is
         }
 
         // Test checkSigners not signers
-        for (uint256 i; i < notSigners.length; i++) {
+        for (uint256 i; i < _notSigners.length; i++) {
             assertFalse(
-                _multiSig.checkSigner(notSigners[i]),
+                _multiSig.checkSigner(_notSigners[i]),
                 i
                     .toString()
                     .concat(" :: _testCheckSigners :: not signer ")
@@ -185,23 +169,74 @@ abstract contract MultiSigFactoryUtils is
             );
         }
     }
+
+    function _sortSigners(
+        address[] memory _accounts
+    ) internal returns (address[] memory, address[] memory) {
+        vm.assume(_accounts.length > 5);
+
+        // Collect not signers.
+        address[] memory _notSigners = new address[](5);
+
+        uint256 _accountIdx;
+        uint256 _counter;
+        for (; _accountIdx < _accounts.length; _accountIdx++) {
+            if (!_usedAccountStatus[_accounts[_accountIdx]]) {
+                _notSigners[_counter++] = _accounts[_accountIdx];
+                _usedAccountStatus[_accounts[_accountIdx]] = true;
+                if (_counter == 5) break;
+            }
+        }
+        vm.assume(_notSigners.length > 0);
+
+        // Collect signers array with possible empty trailing elements.
+        address[] memory _tempSigners = new address[](_accounts.length - 5);
+
+        _accountIdx += 1;
+        _counter = 0;
+        for (; _accountIdx < _accounts.length; _accountIdx++) {
+            if (!_usedAccountStatus[_accounts[_accountIdx]]) {
+                vm.assume(_accounts[_accountIdx] != address(0));
+                _tempSigners[_counter++] = _accounts[_accountIdx];
+                _usedAccountStatus[_accounts[_accountIdx]] = true;
+            }
+        }
+
+        // Collect signers array without empty trailing elements.
+        address[] memory _signers = new address[](_counter);
+
+        for (uint256 i; i < _counter; i++) {
+            _signers[i] = _tempSigners[i];
+        }
+        vm.assume(_signers.length > 0);
+
+        return (_signers, _notSigners);
+    }
 }
 
 contract MutiSigFactoryTest is MultiSigFactoryUtils {
-    function testDeploy(bytes32 _salt) public {
-        MultiSigArgs memory _multiSigArgs = MultiSigArgs({
-            name: name,
-            version: version,
-            threshold: threshold,
-            signers: signers
-        });
+    function testDeploy(
+        MultiSigArgs memory _multiSigArgs,
+        bytes32 _salt
+    ) public {
+        (
+            address[] memory _signers,
+            address[] memory _notSigners
+        ) = _sortSigners(_multiSigArgs.signers);
+
+        _multiSigArgs.threshold = bound(
+            _multiSigArgs.threshold,
+            1,
+            _signers.length
+        );
+        _multiSigArgs.signers = _signers;
 
         address _multiSigAddress = _deploy(_multiSigArgs, _salt);
 
-        _testName(_multiSigAddress, name);
-        _testVersion(_multiSigAddress, version);
-        _testThreshold(_multiSigAddress, threshold);
-        _testSigners(_multiSigAddress, signers);
-        _testCheckSigners(_multiSigAddress, signers);
+        _testName(_multiSigAddress, _multiSigArgs.name);
+        _testVersion(_multiSigAddress, _multiSigArgs.version);
+        _testThreshold(_multiSigAddress, _multiSigArgs.threshold);
+        _testSigners(_multiSigAddress, _multiSigArgs.signers);
+        _testCheckSigners(_multiSigAddress, _signers, _notSigners);
     }
 }

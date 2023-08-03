@@ -2,4 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { IMultiSig } from "./IMultiSig";
+export type { IMultiSigFactory } from "./IMultiSigFactory";
 export type { ISignable } from "./ISignable";

@@ -8,14 +8,23 @@
         "test": "test"
     },
     "scripts": {
-        "test": "hh test",
+        "test": "forge test -vv & hh test",
+        "test-hh": "hh test",
         "test-00": "hh test --grep '00.[0-9]{2}.[0-9]{2}.*'",
         "test-01": "hh test --grep '01.[0-9]{2}.[0-9]{2}.*'",
         "test-02": "hh test --grep '02.[0-9]{2}.[0-9]{2}.*'",
-        "test-03": "hh test --grep '03.[0-9]{2}.[0-9]{2}.*'"
+        "test-03": "hh test --grep '03.[0-9]{2}.[0-9]{2}.*'",
+        "test-forge": "forge test -vv",
+        "test-v": "forge test -vvvv & hh test --vvvv",
+        "test-hh-v": "hh test --vvvv",
+        "test-00-v": "hh test --grep '00.[0-9]{2}.[0-9]{2}.*' --vvvv",
+        "test-01-v": "hh test --grep '01.[0-9]{2}.[0-9]{2}.*' --vvvv",
+        "test-02-v": "hh test --grep '02.[0-9]{2}.[0-9]{2}.*' --vvvv",
+        "test-03-v": "hh test --grep '03.[0-9]{2}.[0-9]{2}.*' --vvvv",
+        "test-forge-v": "forge test -vvvv"
     },
     "author": "",
-    "license": "ISC",
+    "license": "MIT",
     "devDependencies": {
         "@nomicfoundation/hardhat-chai-matchers": "^2.0.1",
         "@nomicfoundation/hardhat-ethers": "^3.0.4",
