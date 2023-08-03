@@ -6,8 +6,12 @@ import {Test} from "forge-std/Test.sol";
 import {stdJson} from "forge-std/StdJson.sol";
 
 abstract contract Setup is Test {
-    address[] notSigners = new address[](5);
-    address[] signers = new address[](5);
+    string public name = "Forge MultiSig";
+    string public version = "1.0.0";
+    uint256 public threshold = 3;
+
+    address[] public notSigners = new address[](5);
+    address[] public signers = new address[](5);
     uint256[][] privKeys = new uint256[][](2);
 
     function setUp() public virtual {
@@ -68,5 +72,14 @@ abstract contract Setup is Test {
 
         stdJson.serialize(objKey, "addresses", _accounts);
         _accountsObj = stdJson.serialize(objKey, "private_keys", _privKeysStr);
+    }
+}
+
+library StrUtils {
+    function concat(
+        string memory a,
+        string memory b
+    ) internal pure returns (string memory) {
+        return string(abi.encodePacked(a, b));
     }
 }

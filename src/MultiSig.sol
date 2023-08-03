@@ -30,6 +30,7 @@ contract MultiSig is
         uint256 _threshold,
         address[] memory _signers
     )
+        payable
         MultiSigMetadata(_name, _version)
         Domain(_name, _version)
         Signable(_signers)

@@ -13,6 +13,30 @@ const _abi = [
         name: "_signer",
         type: "address",
       },
+      {
+        internalType: "uint256",
+        name: "_nonce",
+        type: "uint256",
+      },
+    ],
+    name: "checkNonce",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_signer",
+        type: "address",
+      },
     ],
     name: "checkSigner",
     outputs: [

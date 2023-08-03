@@ -3,6 +3,7 @@
 /* eslint-disable */
 import type {
   BaseContract,
+  BigNumberish,
   BytesLike,
   FunctionFragment,
   Result,
@@ -22,9 +23,17 @@ import type {
 
 export interface ISignableInterface extends Interface {
   getFunction(
-    nameOrSignature: "checkSigner" | "grantSigner" | "revokeSigner"
+    nameOrSignature:
+      | "checkNonce"
+      | "checkSigner"
+      | "grantSigner"
+      | "revokeSigner"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "checkNonce",
+    values: [AddressLike, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "checkSigner",
     values: [AddressLike]
@@ -38,6 +47,7 @@ export interface ISignableInterface extends Interface {
     values: [AddressLike]
   ): string;
 
+  decodeFunctionResult(functionFragment: "checkNonce", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "checkSigner",
     data: BytesLike
@@ -95,6 +105,12 @@ export interface ISignable extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  checkNonce: TypedContractMethod<
+    [_signer: AddressLike, _nonce: BigNumberish],
+    [boolean],
+    "view"
+  >;
+
   checkSigner: TypedContractMethod<[_signer: AddressLike], [boolean], "view">;
 
   grantSigner: TypedContractMethod<
@@ -113,6 +129,13 @@ export interface ISignable extends BaseContract {
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "checkNonce"
+  ): TypedContractMethod<
+    [_signer: AddressLike, _nonce: BigNumberish],
+    [boolean],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "checkSigner"
   ): TypedContractMethod<[_signer: AddressLike], [boolean], "view">;

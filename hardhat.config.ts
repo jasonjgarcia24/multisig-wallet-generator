@@ -1,3 +1,4 @@
+import "hardhat-tracer";
 import "hardhat-preprocessor";
 import { HardhatUserConfig, task } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
